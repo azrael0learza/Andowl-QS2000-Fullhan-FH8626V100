@@ -14,7 +14,7 @@ The **Andowl Q-S2000** ("Panoramic Camera", sold in South Africa as the *Full HD
 - Companion app at time of analysis: **CareCamPro 2.8.23** (`com.huiyun.care.viewerpro.googleplay` on Google Play)
 - Camera model string: `AJL33PQ0806`, firmware `YGT.AJL33PQ0806-v220831.1043` (built 2022-08-31)
 
-> Everything here comes from one unit on our own bench and network. Other Q-S2000 / Andowl / rebrand units may use different silicon — trust the device's own `dmesg` over marketing pages.
+> Everything here comes from one unit on personal bench and network. Other Q-S2000 / Andowl / rebrand units may use different silicon — trust the device's own `dmesg` over marketing pages.
 
 ## Under the hood (as reported by the device itself)
 
