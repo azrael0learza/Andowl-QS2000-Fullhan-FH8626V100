@@ -31,7 +31,7 @@ The **Andowl Q-S2000** ("Panoramic Camera", sold in South Africa as the *Full HD
 | Optics | Two lenses: **3.6 mm wide + 12 mm telephoto** (the "10X digital zoom"), PTZ capable, IR + white LEDs, WDR |
 | Video | Main stream 1920×1080 @ 17 fps H.264, sub stream 640×360; audio 8 kHz G.711-ish |
 
-Marketing says "4K"; the camera negotiates 1080p max on our unit.
+Marketing says "4K"; the camera negotiates 1080p max on my unit.
 
 ## Interesting bits
 
@@ -71,4 +71,4 @@ DeviceLog/
 
 ## Status
 
-This is a work in progress, so more info will hopefuly be added as time passes.
+This is a work in progress, so more info will hopefully be added as time passes.
