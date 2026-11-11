@@ -41,7 +41,7 @@ Marketing says "4K"; the camera negotiates 1080p max on my unit.
 - **Cloud endpoints**: signalling `svr.smartcloudcon.com`; app APIs `exwebsvr.smartcloudcon.com`, `exsvr.smartcloudcon.com`, `gm-us.smartcloudcon.com`; picture/video storage on Huawei OBS and Tencent COS. P2P relay uses Google Cloud IPs (e.g. `34.82.228.200:25515`).
 - **The app and camera speak the same proprietary SDK** (log tags like `ZJViewerSdk`, `TrasLocalLan`, `CMD_TASK`) — the same vendor stack runs on both sides of the connection, so app logs describe camera traffic in the camera's own words.
 
-## The diagnostic log zip password
+## The app diagnostic log zip password
 
 The encryption is **legacy PKZIP ZipCrypto** with a hardcoded password:
 
