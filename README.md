@@ -8,7 +8,7 @@
 
 </div>
 
-The **Andowl Q-S2000** ("Panoramic Camera", sold in South Africa as the *Full HD 4K Wireless Smart Camera – Waterproof Outdoor CCTV*) is one of the many rebrands of a Chinese Fullhan-based PTZ camera line. This repo records what we found by pulling the camera's own diagnostic logs out through the companion app — no opening the case, no desoldering, no hacking required.
+The **Andowl Q-S2000** ("Panoramic Camera", sold in South Africa as the *Full HD 4K Wireless Smart Camera – Waterproof Outdoor CCTV*) is one of the many rebrands of a Chinese Fullhan-based PTZ camera line.
 
 - Listing: <https://www.takealot.com/andowl-q-s2000-full-hd-4k-wireless-smart-camera-waterproof-outdo/PLID72173391>
 - Companion app at time of analysis: **CareCamPro 2.8.23** (`com.huiyun.care.viewerpro.googleplay` on Google Play)
