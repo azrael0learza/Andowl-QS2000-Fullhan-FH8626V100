@@ -1,5 +1,4 @@
-# Andowl Q-S2000 — what's actually inside
-
+# Andowl Q-S2000
 <div align="center">
 
 | The camera | The box |
