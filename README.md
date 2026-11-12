@@ -1,4 +1,4 @@
-# Andowl Q-S2000
+# Andowl Q-S2000 — what's actually inside
 
 <div align="center">
 
@@ -36,7 +36,9 @@ Marketing says "4K"; the camera negotiates 1080p max on my unit.
 ## Interesting bits
 
 - **It's a little Linux server.** Despite the tiny flash, this is a real Linux box with u-boot, a 3 MB kernel partition, jffs2 data partition, three serial ports and a hardware AES engine. All classic embedded-linux things (serial console, flash dump, partition extraction) apply.
-- **The LAN API is alive on the camera.** The camera listens on **TCP 15668** and answers LAN discovery broadcasts (protocol command `3112`). Newer app versions hid the RTSP/local options, but nothing was removed on the camera side — a promising lead for local streaming without the cloud.
+- **It streams RTSP on your LAN after all — no cloud needed.** Port **8554** runs `YGTek RTSP Server 2.0`; `/profile0` is 1080p H.264 + G.711 audio, `/profile1` is 640×360. DESCRIBE is Digest-auth protected (realm `ygtechnologyshanghai`) with the **vendor default `admin` / `admin123456`**, so `ffprobe rtsp://admin:admin123456@<cam>:8554/profile0` just works. The newer app builds hiding "local stream/RTSP" is a *client-side* removal — the server was always there. Change that password if you put this camera on a network you care about.
+- **Also open: telnet (23, BusyBox, login protected — no default password works), plus 843, 1300 and 16668** (they accept connections but say nothing; protocol unknown). No web server on 80/443.
+- **Scanning this camera needs patience.** At normal nmap speeds the 600 MHz device drops probes and a full sweep falsely reports "only port 23 open". A slow scan (`--max-rate 25`, targeted ranges) found the RTSP and vendor ports. Use TCP, and don't trust ping — the camera filters ICMP.
 - **All the config is plain JSON with a `.db` extension.** Nothing in the config store is encrypted: device model, stream settings, alarm policies, night-IR schedules, cloud account identifiers — all readable text.
 - **Cloud endpoints**: signalling `svr.smartcloudcon.com`; app APIs `exwebsvr.smartcloudcon.com`, `exsvr.smartcloudcon.com`, `gm-us.smartcloudcon.com`; picture/video storage on Huawei OBS and Tencent COS. P2P relay uses Google Cloud IPs (e.g. `34.82.228.200:25515`).
 - **The app and camera speak the same proprietary SDK** (log tags like `ZJViewerSdk`, `TrasLocalLan`, `CMD_TASK`) — the same vendor stack runs on both sides of the connection, so app logs describe camera traffic in the camera's own words.
