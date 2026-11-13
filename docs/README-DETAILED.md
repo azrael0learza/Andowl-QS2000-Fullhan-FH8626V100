@@ -6,7 +6,7 @@
 
 | The camera | The box |
 |---|---|
-| ![Andowl Q-S2000](images/s2000.jpeg) | ![Q-S2000 packaging](images/s2000package.jpeg.jpg) |
+| ![Andowl Q-S2000](../images/s2000.jpeg) | ![Q-S2000 packaging](../images/s2000package.jpeg.jpg) |
 
 </div>
 
