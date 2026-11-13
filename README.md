@@ -18,19 +18,19 @@ The **Andowl Q-S2000** (sold in South Africa as the *Full HD 4K Wireless Smart C
 ## ⚠️ Security - read this first
 
 - **TCP 1300 runs a maintenance service with no authentication at all.** Anyone on the same network can send a command and have it run as root, with the output sent back to them. This is a full compromise, not a theoretical one.
-- **TCP 6688 serves a live snapshot with no login:** `http://<cam>:6688/snapshot.jpg`.
+- **TCP 6688 serves a live snapshot with no login:** `http://<CamIP>:6688/snapshot.jpg`.
 - **Mitigation:** put the camera on an isolated network or VLAN, or block inbound LAN access to ports 1300 and 6688, until/unless the vendor fixes this.
 
 ## Using the streams
 
 | Stream | URL | Result |
 |---|---|---|
-| Main | `rtsp://<cam>:8554/profile0` | H.264 1920×1080 @ 16.67 fps + G.711 audio |
-| Sub | `rtsp://<cam>:8554/profile1` | H.264 640×360 @ 16.67 fps + same audio |
-| Still frame | `http://<cam>:6688/snapshot.jpg` | 640×368 JPEG, no authentication |
+| Main | `rtsp://<CamIP>:8554/profile0` | H.264 1920×1080 @ 16.67 fps + G.711 audio |
+| Sub | `rtsp://<CamIP>:8554/profile1` | H.264 640×360 @ 16.67 fps + same audio |
+| Still frame | `http://<CamIP>:6688/snapshot.jpg` | 640×368 JPEG, no authentication |
 
 ```bash
-ffprobe -rtsp_transport tcp "rtsp://admin:admin123456@<cam>:8554/profile0"
+ffprobe -rtsp_transport tcp "rtsp://admin:admin123456@<CamIP>:8554/profile0"
 ```
 
 Always force `-rtsp_transport tcp` - UDP gives artefacts over Wi-Fi. VLC handles the digest challenge on its own (*Media → Open Network Stream*).
