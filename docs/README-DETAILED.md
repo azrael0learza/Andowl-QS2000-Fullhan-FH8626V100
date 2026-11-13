@@ -64,31 +64,31 @@ Marketing says "4K"; the camera negotiates 1080p max on my unit.
 
 | Stream | URL | Result |
 |---|---|---|
-| Main | `rtsp://<cam>:8554/profile0` | H.264 Main **1920×1080 @ 16.67 fps** + G.711 µ-law 8 kHz mono |
-| Sub | `rtsp://<cam>:8554/profile1` | H.264 Main **640×360 @ 16.67 fps** + the same audio |
-| Still frame | `http://<cam>:6688/snapshot.jpg` | 640×368 JPEG, **no authentication at all** |
+| Main | `rtsp://<CamIP>:8554/profile0` | H.264 Main **1920×1080 @ 16.67 fps** + G.711 µ-law 8 kHz mono |
+| Sub | `rtsp://<CamIP>:8554/profile1` | H.264 Main **640×360 @ 16.67 fps** + the same audio |
+| Still frame | `http://<CamIP>:6688/snapshot.jpg` | 640×368 JPEG, **no authentication at all** |
 
 The SDP hands out *absolute* track URLs, which matters if you write your own client:
 
 ```
-Content-Base: rtsp://<cam>:8554/profile0/
-  video  a=control: rtsp://<cam>:8554/profile0/track=v
-  audio  a=rtpmap:0 PCMU/8000/1   a=control: rtsp://<cam>:8554/profile0/track=a
+Content-Base: rtsp://<CamIP>:8554/profile0/
+  video  a=control: rtsp://<CamIP>:8554/profile0/track=v
+  audio  a=rtpmap:0 PCMU/8000/1   a=control: rtsp://<CamIP>:8554/profile0/track=a
 ```
 
 Verified working commands (credentials in the URL are accepted):
 
 ```bash
-ffprobe -rtsp_transport tcp "rtsp://admin:admin123456@<cam>:8554/profile0"
+ffprobe -rtsp_transport tcp "rtsp://admin:admin123456@<CamIP>:8554/profile0"
 
 # video only - mp4 + G.711 is a bad combination, so drop the audio:
-ffmpeg -rtsp_transport tcp -i "rtsp://admin:admin123456@<cam>:8554/profile0" -c copy -an out.mp4
+ffmpeg -rtsp_transport tcp -i "rtsp://admin:admin123456@<CamIP>:8554/profile0" -c copy -an out.mp4
 
 # with audio - matroska carries µ-law happily:
-ffmpeg -rtsp_transport tcp -i "rtsp://admin:admin123456@<cam>:8554/profile1" -c copy out.mkv
+ffmpeg -rtsp_transport tcp -i "rtsp://admin:admin123456@<CamIP>:8554/profile1" -c copy out.mkv
 
 # single snapshot frame from the stream:
-ffmpeg -rtsp_transport tcp -i "rtsp://admin:admin123456@<cam>:8554/profile1" -frames:v 1 -update 1 snap.jpg
+ffmpeg -rtsp_transport tcp -i "rtsp://admin:admin123456@<CamIP>:8554/profile1" -frames:v 1 -update 1 snap.jpg
 ```
 
 Always force `-rtsp_transport tcp`: the Wi-Fi link is lossy enough that UDP gives you artefacts. VLC handles the digest challenge on its own (*Media → Open Network Stream*).
@@ -193,16 +193,16 @@ Device identifiers, cloud account IDs, relay keys and session tokens are deliber
 
 ```bash
 # what is listening, slowly - a fast sweep gives false negatives on this SoC
-nmap -sT -Pn --max-rate 25 -p 23,843,1300,6688,8554,8699,9876,16668 <cam>
+nmap -sT -Pn --max-rate 25 -p 23,843,1300,6688,8554,8699,9876,16668 <CamIP>
 
 # unauthenticated snapshot
-curl -s -o snap.jpg -w '%{http_code} %{content_type} %{size_download}\n' http://<cam>:6688/snapshot.jpg
+curl -s -o snap.jpg -w '%{http_code} %{content_type} %{size_download}\n' http://<CamIP>:6688/snapshot.jpg
 
 # RTSP with the vendor default
-ffprobe -rtsp_transport tcp "rtsp://admin:admin123456@<cam>:8554/profile0"
+ffprobe -rtsp_transport tcp "rtsp://admin:admin123456@<CamIP>:8554/profile0"
 
 # the maintenance service answers without credentials
-printf '<READSN></READSN>\n' | nc -w 5 <cam> 1300
+printf '<READSN></READSN>\n' | nc -w 5 <CamIP> 1300
 ```
 
 If any of those answers, the mitigation is the same: **put the camera on an isolated network or VLAN, or firewall inbound TCP 1300 and 6688 on the LAN**, and change the RTSP password if the firmware lets you.
