@@ -2,9 +2,9 @@
 
 ![Andowl Q-S2000](images/s2000.jpeg)
 
-The **Andowl Q-S2000** (sold in South Africa as the *Full HD 4K Wireless Smart Camera – Waterproof Outdoor CCTV*) is a rebrand of a Chinese Fullhan-based PTZ camera line. This repo documents what I found on one unit.
+The **Andowl Q-S2000** (sold in South Africa as the *Full HD 4K Wireless Smart Camera – Waterproof Outdoor CCTV*) is a rebrand of a Chinese Fullhan-based PTZ camera line. This repo documents what I found on one unit I own.
 
-> Everything here comes from a single unit on my personal bench. Other Q-S2000 / Andowl / rebrand units may use different silicon.
+> Everything here comes from a single unit on my personal bench and network. Other Q-S2000 / Andowl / rebrand units may use different silicon. Testing was done on hardware I own - if you use any of this, do the same.
 
 ## The short version
 
@@ -15,19 +15,40 @@ The **Andowl Q-S2000** (sold in South Africa as the *Full HD 4K Wireless Smart C
 - **Console:** UART `ttyS0` @ 115200
 - **Firmware:** `YGT.AJL33PQ0806-v220831.1043` (companion app: CareCamPro 2.8.23)
 
-## Important notes
+## ⚠️ Security - read this first
 
-- **Local RTSP works with no cloud.** Port `8554`, Digest auth, vendor default `admin` / `admin123456`:
-  `ffprobe rtsp://admin:admin123456@<cam>:8554/profile0`
-- **Change that default password** if the camera is on a network you care about.
-- **Other open ports:** telnet (23, login protected), plus 843, 1300 and 16668 (unknown protocol). No web server.
-- **Scan slowly.** The 600 MHz device drops probes at normal nmap speeds and a fast scan will wrongly show only port 23. Use TCP with a low rate (e.g. `--max-rate 25`); it doesn't answer ping.
-- **Config is plaintext JSON** (`.db` files), including cloud account identifiers.
-- **Cloud:** the camera talks to `smartcloudcon.com` services; storage is on Huawei OBS and Tencent COS.
+- **TCP 1300 runs a maintenance service with no authentication at all.** Anyone on the same network can send a command and have it run as root, with the output sent back to them. This is a full compromise, not a theoretical one.
+- **TCP 6688 serves a live snapshot with no login:** `http://<cam>:6688/snapshot.jpg`.
+- **Mitigation:** put the camera on an isolated network or VLAN, or block inbound LAN access to ports 1300 and 6688, until/unless the vendor fixes this.
+
+## Using the streams
+
+| Stream | URL | Result |
+|---|---|---|
+| Main | `rtsp://<cam>:8554/profile0` | H.264 1920×1080 @ 16.67 fps + G.711 audio |
+| Sub | `rtsp://<cam>:8554/profile1` | H.264 640×360 @ 16.67 fps + same audio |
+| Still frame | `http://<cam>:6688/snapshot.jpg` | 640×368 JPEG, no authentication |
+
+```bash
+ffprobe -rtsp_transport tcp "rtsp://admin:admin123456@<cam>:8554/profile0"
+```
+
+Always force `-rtsp_transport tcp` - UDP gives artefacts over Wi-Fi. VLC handles the digest challenge on its own (*Media → Open Network Stream*).
+
+## Credentials found
+
+| Credential | Where it works | Status |
+|---|---|---|
+| `admin` / `admin123456` | RTSP, TCP 8554 (Digest only) | **Verified working** |
+| *(none)* | TCP 1300 maintenance service | **Verified: no password, no IP check** |
+| *(none)* | TCP 6688 `/snapshot.jpg` | **Verified: no login** |
+| `!qwert12345` | app diagnostic-log zip (ZipCrypto) | code-derived, not yet reproven on a fresh export |
+
+**Change the RTSP password if your firmware allows it, and isolate the camera on the network regardless** - the 1300 and 6688 issues above aren't fixed by a password change.
 
 ## Full technical details
 
-For the complete hardware table, flash layout, cloud endpoints, app diagnostic log password, log archive layout and observed quirks, see the **[detailed README](docs/README-DETAILED.md)**.
+For the complete hardware table, port map, the root-shell proof of concept, the ONVIF findings, log layout, and gotchas from the reverse-engineering process, see the **[detailed README](docs/README-DETAILED.md)**.
 
 ## Status
 
