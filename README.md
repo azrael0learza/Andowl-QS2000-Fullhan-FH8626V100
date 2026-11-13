@@ -46,6 +46,18 @@ Always force `-rtsp_transport tcp` - UDP gives artefacts over Wi-Fi. VLC handles
 
 **Change the RTSP password if your firmware allows it, and isolate the camera on the network regardless** - the 1300 and 6688 issues above aren't fixed by a password change.
 
+## The app diagnostic log zip password
+
+The encryption is **legacy PKZIP ZipCrypto** with a hardcoded password:
+
+```
+!qwert12345
+```
+
+Inside you get the camera's own filesystem logs, e.g. `dmesg.log`, `driver1/2.log`, `ifconfig.log`, `uptime.log`, runtime logs, and the camera-side config store.
+
+Confidence note: that password was read out of the app's own zip writer (`com/huiyun/framwork/utiles/m1.java`, dispatched from `vj/c.java`), not observed in a captured file - treat it as code-derived until someone confirms it on a fresh export.
+
 ## Full technical details
 
 For the complete hardware table, port map, the root-shell proof of concept, the ONVIF findings, log layout, and gotchas from the reverse-engineering process, see the **[detailed README](docs/README-DETAILED.md)**.
