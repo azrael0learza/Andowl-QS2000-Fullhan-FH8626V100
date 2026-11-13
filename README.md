@@ -1,4 +1,4 @@
-# Andowl Q-S2000 — what's actually inside
+# Andowl Q-S2000
 
 ![Andowl Q-S2000](images/s2000.jpeg)
 
